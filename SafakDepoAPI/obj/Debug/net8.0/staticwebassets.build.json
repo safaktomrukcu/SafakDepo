@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "sThDepzUVGfziwAPbNCSUphxrrFa7x6l89HRQ9eURLU=",
+  "Source": "SafakDepoAPI",
+  "BasePath": "_content/SafakDepoAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
