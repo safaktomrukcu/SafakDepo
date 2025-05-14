@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Asus\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj": {}
+    "C:\\Users\\pisi\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Asus\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj": {
+    "C:\\Users\\pisi\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Asus\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj",
+        "projectUniqueName": "C:\\Users\\pisi\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj",
         "projectName": "SafakDepoAPI",
-        "projectPath": "C:\\Users\\Asus\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj",
-        "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Asus\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\obj\\",
+        "projectPath": "C:\\Users\\pisi\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\SafakDepoAPI.csproj",
+        "packagesPath": "C:\\Users\\pisi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pisi\\Desktop\\apps\\SafakDepo\\SafakDepoAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\pisi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
