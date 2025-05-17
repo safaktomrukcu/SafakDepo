@@ -21,7 +21,7 @@ namespace SafakDepoAPI.Controllers.ProductControllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ReqProductCreate product)
+        public async Task<IActionResult> CreateProduct(ProductCreateDTO product)
         {
             bool isProductCodeUnique = await _productCodeChecker.IsProductCodeUnique(product.Code);
 

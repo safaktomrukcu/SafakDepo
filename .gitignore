@@ -1,2 +1,4 @@
 node_modules
-.vs
+./SafakDepoAPI/bin
+./SafakDepoAPI/obj
+./SafakDepoAPI/.vs

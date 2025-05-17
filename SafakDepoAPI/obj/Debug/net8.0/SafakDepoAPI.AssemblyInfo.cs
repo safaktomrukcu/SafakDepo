@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SafakDepoAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09d3d86081da2360e83217ac2cd9b6a8eb0d818c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5834de3dd5de6e19060aefe00e7a61a50d4dd321")]
 [assembly: System.Reflection.AssemblyProductAttribute("SafakDepoAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SafakDepoAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
