@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 const CreateProduct = () => {
     const [product, setProduct] = useState({
@@ -35,7 +35,7 @@ const CreateProduct = () => {
             axios.post('https://localhost:7018/api/product', pendingProduct),
             {
                 loading: 'Ürün ekleniyor...',
-                success: (response) => {
+                success: () => {
                     setShowConfirm(false);
                     setProduct({
                         name: '',
@@ -71,13 +71,12 @@ const CreateProduct = () => {
 
     return (
         <div>
-            <Toaster />
             <div className="max-w-md mx-auto bg-white p-6 rounded shadow relative">
                 <h2 className="text-xl font-bold mb-4">Yeni Ürün Ekle</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block mb-1 font-medium">Ürün Adı</label>
-                        <input type="text" name="name" value={product.name} onChange={handleProductChange} className="w-full border rounded px-3 py-2" required />
+                        <input type="text" name="name" value={product.name} onChange={handleProductChange} className="w-full border rounded px-3 py-2"  />
                     </div>
                     <div>
                         <label className="block mb-1 font-medium">Ürün Kodu</label>

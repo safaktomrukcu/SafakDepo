@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks.Dataflow;
 
 namespace SafakDepoAPI.Models
 {
@@ -21,5 +22,6 @@ namespace SafakDepoAPI.Models
         public int Stock { get; set; } = 0;
         public int PalletStock { get; set; } = 0;
         public int DisplayIndex { get; set; } = 0;
+        public bool IsActive { get; set; } = false;
     }
 }

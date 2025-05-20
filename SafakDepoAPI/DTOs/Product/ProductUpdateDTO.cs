@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SafakDepoAPI.DTOs
+namespace SafakDepoAPI.DTOs.Product
 {
-    public class ProductCreateDTO
+    public class ProductUpdateDTO
     {
         [Required]
         public required string Name { get; set; }
@@ -12,6 +12,6 @@ namespace SafakDepoAPI.DTOs
         public string? PalletQty { get; set; }
         public string? BoxQty { get; set; }
         public string? Weight { get; set; }
-
+        public bool IsActive { get; set; }
     }
 }

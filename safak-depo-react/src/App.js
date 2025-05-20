@@ -6,10 +6,12 @@ import UpdateProduct from './pages/products/UpdateProduct';
 import Home from './pages/home';
 import Navbar from './components/Navbar';
 import ShipmentList from './pages/shipments/ShipmentList';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-100">
+      <Toaster />
       <Navbar />
       <main className="container mx-auto p-4 mt-8">
         <Routes>
