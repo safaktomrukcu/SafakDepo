@@ -8,12 +8,27 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const navigate = useNavigate();
 
+    const [showHidden, setShowHidden] = useState(false);
+    const [hiddenProducts, setHiddenProducts] = useState([]);
+    const [hiddenLoading, setHiddenLoading] = useState(false);
+
+
     useEffect(() => {
         fetch("https://localhost:7018/api/product")
             .then((res) => res.json())
             .then((data) => setProducts(data))
             .catch((err) => console.error(err));
     }, []);
+
+    useEffect(() => {
+        if (showHidden) {
+            setHiddenLoading(true);
+            axios.get("https://localhost:7018/api/product/hiddenproducts")
+                .then(res => setHiddenProducts(res.data))
+                .catch(() => setHiddenProducts([]))
+                .finally(() => setHiddenLoading(false));
+        }
+    }, [showHidden]);
 
     const handleSelectProduct = (id) => {
         toast.promise(
@@ -59,6 +74,38 @@ const ProductList = () => {
                     ))}
                 </tbody>
             </table>
+
+            <div className="flex items-center mb-4">
+                <input
+                    id="showHidden"
+                    type="checkbox"
+                    checked={showHidden}
+                    onChange={() => setShowHidden(v => !v)}
+                    className="mr-2"
+                />
+                <label htmlFor="showHidden" className="font-semibold cursor-pointer">
+                    Gizli ürünleri göster
+                </label>
+            </div>
+
+            {showHidden && (
+                <div className="mb-6">
+                    <h3 className="font-bold mb-2">Gizli Ürünler</h3>
+                    {hiddenLoading ? (
+                        <div>Yükleniyor...</div>
+                    ) : hiddenProducts.length === 0 ? (
+                        <div>Gizli ürün bulunamadı.</div>
+                    ) : (
+                        <ul className="list-disc list-inside space-y-1">
+                            {hiddenProducts.map((item) => (
+                                <li key={item.id}>
+                                    <b>{item.name}</b> ({item.code})
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            )}
 
             {selectedProduct && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"

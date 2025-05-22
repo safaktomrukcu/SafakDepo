@@ -65,6 +65,29 @@ namespace SafakDepoAPI.Controllers.ProductControllers
             return Ok(productList);
         }
 
+        [HttpGet("hiddenproducts")]
+        public async Task<IActionResult> GetHiddenProductList()
+        {
+            List<Product> products = await _context.Products
+                .Where(p => p.IsActive == false)
+                .OrderBy(p => p.DisplayIndex)
+                .ToListAsync();
+
+            List<ProductListDTO> productList = products.Select(
+                p => new ProductListDTO
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Code = p.Code,
+                    Brand = p.Brand,
+                    Stock = p.Stock
+                }).ToList();
+
+            return Ok(productList);
+
+
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductDetail(int id)
         {

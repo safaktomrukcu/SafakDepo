@@ -132,16 +132,6 @@ const UpdateProduct = () => {
                     />
                 </div>
                 <div>
-                    <label className="block font-semibold">Stok:</label>
-                    <input
-                        type="number"
-                        name="stock"
-                        value={product.stock || ""}
-                        onChange={handleChange}
-                        className="w-full border rounded px-2 py-1"
-                    />
-                </div>
-                <div>
                     <label className="block font-semibold">Palet Stok:</label>
                     <input
                         type="number"

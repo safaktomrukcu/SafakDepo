@@ -22,6 +22,6 @@ namespace SafakDepoAPI.Models
         public int Stock { get; set; } = 0;
         public int PalletStock { get; set; } = 0;
         public int DisplayIndex { get; set; } = 0;
-        public bool IsActive { get; set; } = false;
+        public bool IsActive { get; set; } = true;
     }
 }
