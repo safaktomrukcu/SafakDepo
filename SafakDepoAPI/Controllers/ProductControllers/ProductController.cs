@@ -9,16 +9,10 @@ namespace SafakDepoAPI.Controllers.ProductControllers
 {
     [Route("api/product")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController(ApplicationDbContext context, ProductCodeChecker productCodeChecker) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ProductCodeChecker _productCodeChecker;
-        public ProductController(ApplicationDbContext context, ProductCodeChecker productCodeChecker)
-        {
-            _context = context;
-            _productCodeChecker = productCodeChecker;
-
-        }
+        private readonly ApplicationDbContext _context = context;
+        private readonly ProductCodeChecker _productCodeChecker = productCodeChecker;
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateDTO product)

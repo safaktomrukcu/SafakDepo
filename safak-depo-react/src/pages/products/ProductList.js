@@ -96,13 +96,30 @@ const ProductList = () => {
                     ) : hiddenProducts.length === 0 ? (
                         <div>Gizli ürün bulunamadı.</div>
                     ) : (
-                        <ul className="list-disc list-inside space-y-1">
-                            {hiddenProducts.map((item) => (
-                                <li key={item.id}>
-                                    <b>{item.name}</b> ({item.code})
-                                </li>
-                            ))}
-                        </ul>
+                        <table className="min-w-full bg-white border">
+                            <thead>
+                                <tr>
+                                    <th className="border px-4 py-2">Ad</th>
+                                    <th className="border px-4 py-2">Kod</th>
+                                    <th className="border px-4 py-2">Marka</th>
+                                    <th className="border px-4 py-2">Stok</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {hiddenProducts.map((item) => (
+                                    <tr
+                                        key={item.id}
+                                        className="cursor-pointer hover:bg-gray-100"
+                                        onClick={() => handleSelectProduct(item.id)}
+                                    >
+                                        <td className="border px-4 py-2">{item.name}</td>
+                                        <td className="border px-4 py-2">{item.code}</td>
+                                        <td className="border px-4 py-2">{item.brand}</td>
+                                        <td className="border px-4 py-2">{item.stock}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     )}
                 </div>
             )}

@@ -1,20 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks.Dataflow;
 
 namespace SafakDepoAPI.Models
 {
     [Index(nameof(Code), IsUnique = true, Name = "IX_Product_Code")]
-
     public class Product
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
-        public required string  Name { get; set; }
+        public required string Name { get; set; }
         [Required]
-        public required string Code { get; set; } 
+        public required string Code { get; set; }
         public string? Brand { get; set; }
         public string? PalletQty { get; set; }
         public string? BoxQty { get; set; }
@@ -23,5 +20,7 @@ namespace SafakDepoAPI.Models
         public int PalletStock { get; set; } = 0;
         public int DisplayIndex { get; set; } = 0;
         public bool IsActive { get; set; } = true;
+        public List<Pallet> Pallets { get; set; } = new();
+        public List<Shipment> Shipments { get; set; } = new();
     }
 }
