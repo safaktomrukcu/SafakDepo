@@ -1,14 +1,14 @@
-﻿namespace SafakDepoAPI.Models
+﻿namespace SafakDepoAPI.DTOs.Pallet
 {
-    public class Pallet
+    public class GetPalletDTO
     {
         public int Id { get; set; }
         public int PalletNumber { get; set; }
         public int ProductId { get; set; }
-        public Product Product { get; set; } = null!;
+        public required string ProductName { get; set; }
+        public required string ProductCode { get; set; }
         public int Quantity { get; set; } = 0;
         public required string Location { get; set; }
-        public List<ShipmentPallet> ShipmentPallets { get; set; } = null!;
-        public bool IsActive { get; set; } = true;
+        
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace SafakDepoAPI.DTOs.Shipment
 {
-    public class TotalPalletCreateDTO
+    public class OutboundPalletDTO
     {
-        public int ProductId { get; set; }
+        public int PalletId { get; set; }
         public int Quantity { get; set; }
     }
 }

@@ -2,7 +2,9 @@
 {
     public class InboundShipmentDTO
     {
-        public int Quantity { get; set; }
-        public int ProductId { get; set; }
+        public DateOnly ShipmentDate { get; set; }
+        public List<InboundPalletDTO> InboundPalletsDTO { get; set; }
+        public List<InboundTotalDTO> InboundTotalsDTO { get; set; }
     }
 }
+

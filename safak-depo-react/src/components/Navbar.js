@@ -10,6 +10,7 @@ function Navbar() {
           <li><Link to="/urunler" className="hover:text-blue-200">Stoklar</Link></li>
           <li><Link to="/urun-ekle" className="hover:text-blue-200">Ürün Ekle</Link></li>
           <li><Link to="/sevkiyatlar" className="hover:text-blue-200">Sevkiyatlar</Link></li>
+          <li><Link to="/gelen-sevkiyat" className="hover:text-blue-200">Gelen Sevkiyat</Link></li>
         </ul>
       </div>
     </nav>

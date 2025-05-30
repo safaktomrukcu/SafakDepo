@@ -21,6 +21,6 @@ namespace SafakDepoAPI.Models
         public int DisplayIndex { get; set; } = 0;
         public bool IsActive { get; set; } = true;
         public List<Pallet> Pallets { get; set; } = new();
-        public List<Shipment> Shipments { get; set; } = new();
+        public List<ShipmentProduct> ShipmentProducts { get; set; } = new();
     }
 }

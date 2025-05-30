@@ -4,6 +4,7 @@ import ProductList from './pages/products/ProductList';
 import CreateProduct from './pages/products/CreateProduct';
 import UpdateProduct from './pages/products/UpdateProduct';
 import Home from './pages/home';
+import InboundShipment from './pages/shipments/InboundShipment';
 import Navbar from './components/Navbar';
 import ShipmentList from './pages/shipments/ShipmentList';
 import { Toaster } from 'react-hot-toast';
@@ -20,6 +21,7 @@ function App() {
           <Route path="/urun-ekle" element={<CreateProduct />} />
           <Route path="/urun-duzenle/:id" element={<UpdateProduct />} />
           <Route path="/sevkiyatlar" element={<ShipmentList/>} />
+          <Route path="/gelen-sevkiyat" element={<InboundShipment />} />
         </Routes>
       </main>
     </div>
