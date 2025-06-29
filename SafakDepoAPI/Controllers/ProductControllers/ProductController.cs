@@ -59,6 +59,27 @@ namespace SafakDepoAPI.Controllers.ProductControllers
             return Ok(productList);
         }
 
+        [HttpGet("palletquantity")]
+        public async Task<IActionResult> GetProductListWithPalletQantity()
+        {
+            List<Product> products = await _context.Products
+                .Where(p => p.IsActive)
+                .OrderBy(p => p.DisplayIndex)
+                .ToListAsync();
+
+            List<ProductListWithPalletQuantityDTO> productList = products.Select(p => new ProductListWithPalletQuantityDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Code = p.Code,
+                Brand = p.Brand,
+                PalletQuantity = p.PalletQty,
+                Stock = p.Stock,
+            }).ToList();
+
+            return Ok(productList);
+        }
+
         [HttpGet("hiddenproducts")]
         public async Task<IActionResult> GetHiddenProductList()
         {
@@ -146,5 +167,22 @@ namespace SafakDepoAPI.Controllers.ProductControllers
             return Ok(product.Name + " güncellendi.");
         }
 
-    }
-}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            Product? product = await _context.Products
+                .Where(p => p.Id == id)
+                .FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return NotFound(new
+                {
+                    message = "Ürün bulunamadı."
+                });
+            }
+            product.IsActive = false;
+            await _context.SaveChangesAsync();
+            return Ok(product.Name + " silindi.");
+        }
+    };
+};

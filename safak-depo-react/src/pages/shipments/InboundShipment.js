@@ -4,7 +4,7 @@ import axios from "axios";
 
 const InboundShipment = () => {
     const [shipment, setShipment] = useState({
-        ShipmentDate: "2025-01-01",
+        ShipmentDate: "",
         InboundPalletsDTO: [],
         InboundTotalsDTO: []
     });
@@ -14,10 +14,31 @@ const InboundShipment = () => {
     const [palletLocations, setPalletLocations] = useState({});
 
     useEffect(() => {
-        var a = 1
+        const today = new Date();
+        today.setHours(today.getHours() - today.getTimezoneOffset() / 60, 0, 0, 0);
+        setShipment(prev => ({
+            ...prev,
+            ShipmentDate: today.toISOString().slice(0, 10) // Tarihi yyyy-MM-dd formatında ayarla
+        }));
+
         toast.promise(
-            axios.get("https://localhost:7018/api/product")
-                .then(res => setProducts(res.data))
+            axios.get("https://localhost:7018/api/product/palletquantity")
+                .then(res => {
+                    setProducts(res.data)
+
+                    // const defaultQuantities = {};
+                    // const defaultLocations = {};
+                    res.data.forEach(product => {
+                        setPalletQuantities(prev => ({
+                            ...prev,
+                            [product.id]: product.palletQuantity || ""
+                        }));
+                        setPalletLocations(prev => ({
+                            ...prev,
+                            [product.id]: "Tuzla"
+                        }));
+                    });
+                })
                 .catch(() => setProducts([]))
             , {
                 loading: "Ürünler yükleniyor...",
@@ -25,16 +46,6 @@ const InboundShipment = () => {
                 error: "Ürünler yüklenirken hata oluştu."
             }
         );
-        setPalletLocations({
-            1: "Pharmastar",
-            2: "Pharmastar",
-            3: "Pharmastar"
-        })
-        setPalletQuantities({
-            1: 1,
-            2: 2,
-            3: 3
-        });
     }, []); // Boş bağımlılık dizisi ile sadece bileşen ilk yüklendiğinde çalışır
 
     const handleChange = (e) => {
@@ -72,7 +83,7 @@ const InboundShipment = () => {
         setShipment(prev => ({
             ...prev,
             InboundPalletsDTO: [...prev.InboundPalletsDTO,
-            { ProductId: product.id, Quantity: quantity, Location: location }
+            { ProductId: product.id, ProductName: product.name, ProductCode: product.code, Quantity: quantity, Location: location }
             ],
         }));
 
@@ -91,10 +102,25 @@ const InboundShipment = () => {
             setShipment(prev => ({
                 ...prev,
                 InboundTotalsDTO: [...prev.InboundTotalsDTO,
-                { ProductId: product.id, Quantity: quantity }
+                { ProductName: product.name, ProductCode: product.code, ProductId: product.id, Quantity: quantity }
                 ]
             }));
         }
+    };
+
+    // Tarihi bir gün arttır
+    const incDate = () => {
+        setShipment(prev => ({
+            ...prev,
+            ShipmentDate: new Date(new Date(prev.ShipmentDate).getTime() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+        }));
+    };
+    // Tarihi bir gün azalt
+    const decDate = () => {
+        setShipment(prev => ({
+            ...prev,
+            ShipmentDate: new Date(new Date(prev.ShipmentDate).getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+        }));
     };
 
     const handleRemovePallet = (index, productId, quantity) => {
@@ -112,7 +138,6 @@ const InboundShipment = () => {
                         // Eğer miktar sıfır veya negatif olursa, toplamı kaldır
                         prev.InboundTotalsDTO = prev.InboundTotalsDTO.filter(tt => tt.ProductId !== productId);
                     }
-                    console.log("QQQQQQ")
                     return { ProductId: t.ProductId, Quantity: t.Quantity - quantity };
                 }
                 return t;
@@ -122,11 +147,10 @@ const InboundShipment = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!shipment.ShipmentDate ) {
-            toast.error("Sevkiyat tarihi zorunludur.");
+        if (!shipment.ShipmentDate || shipment.InboundPalletsDTO.length === 0 || shipment.InboundTotalsDTO.length === 0) {
+            toast.error("Sevkiyat tarihi zorunludur ve ya  palet eklenmemiştir.");
             return;
         }
-        console.log(shipment);
         await toast.promise(
             axios.post("https://localhost:7018/api/shipment/inbound", shipment),
             {
@@ -135,11 +159,11 @@ const InboundShipment = () => {
                 error: "Sevkiyat kaydedilirken hata oluştu."
             }
         );
-        // setShipment({
-        //     ShipmentDate: "",
-        //     InboundPalletsDTO: [],
-        //     InboundTotalsDTO: []
-        // });
+        setShipment(prev => ({
+            ...prev,
+            InboundPalletsDTO: [],
+            InboundTotalsDTO: []
+        }));
     };
 
     return (
@@ -148,14 +172,32 @@ const InboundShipment = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block font-semibold">Sevkiyat Tarihi:</label>
-                    <input
-                        type="date"
-                        name="ShipmentDate"
-                        value={shipment.ShipmentDate}
-                        onChange={handleChange}
-                        className="w-full border rounded px-2 py-1"
-                        required
-                    />
+                    <div className="flex items-center gap-2">
+                        <button
+                            type="button" // <-- Bunu ekle!
+                            className="px-2 py-1 bg-gray-200 rounded"
+                            onClick={decDate}
+                            title="Bir gün geri"
+                        >
+                            -
+                        </button>
+                        <input
+                            type="date"
+                            name="ShipmentDate"
+                            value={shipment.ShipmentDate}
+                            onChange={handleChange}
+                            className="border rounded px-2 py-1"
+                            required
+                        />
+                        <button
+                            type="button" // <-- Bunu ekle!
+                            className="px-2 py-1 bg-gray-200 rounded"
+                            onClick={incDate}
+                            title="Bir gün ileri"
+                        >
+                            +
+                        </button>
+                    </div>
                 </div>
                 {/* Ürünler tablosu */}
                 <div className="border-t pt-4">
@@ -211,6 +253,17 @@ const InboundShipment = () => {
                             ))}
                         </tbody>
                     </table>
+                    <h4 className="font-semibold mb-1">Toplam Paletler</h4>
+                    <ul>
+                        {shipment.InboundTotalsDTO.map((p, i) => (
+                            <li key={i} className="flex justify-between items-center border-b py-1">
+                                <span>
+                                    <b>Ürün:</b> {products.find(prod => prod.id === p.ProductId)?.name || p.ProductId}{" "}
+                                    <b>Miktar:</b> {p.Quantity}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
                     <h4 className="font-semibold mb-1">Eklenen Paletler</h4>
                     <ul>
                         {shipment.InboundPalletsDTO.map((p, i) => (
@@ -226,17 +279,6 @@ const InboundShipment = () => {
                                 >
                                     Sil
                                 </button>
-                            </li>
-                        ))}
-                    </ul>
-                    <h4 className="font-semibold mb-1">Toplam Paletler</h4>
-                    <ul>
-                        {shipment.InboundTotalsDTO.map((p, i) => (
-                            <li key={i} className="flex justify-between items-center border-b py-1">
-                                <span>
-                                    <b>Ürün:</b> {products.find(prod => prod.id === p.ProductId)?.name || p.ProductId}{" "}
-                                    <b>Miktar:</b> {p.Quantity}
-                                </span>
                             </li>
                         ))}
                     </ul>

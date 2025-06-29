@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SafakDepoAPI.Data;
 using SafakDepoAPI.Helpers;
+using SafakDepoAPI.Controllers.ProductControllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,47 +12,33 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ProductCodeChecker>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 // CORS ayarları
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
 });
 
 var app = builder.Build();
 
-while (true)
+// Kullanıcıdan etkileşimli giriş almak production ortamında önerilmez.
+// Bunun yerine, migration ve veritabanı işlemleri için CLI veya otomasyon tercih edilmelidir.
+// Ancak, istek üzerine kodunuzu daha güvenli ve okunabilir hale getirdim.
+
+if (args.Contains("--init-db"))
 {
-    Console.WriteLine("Veritabanı ve model oluşturmak istiyor musunuz (y/N)");
-    string? test = Console.ReadLine();
-    if (test == "y" || test == "Y")
+    Console.WriteLine("İİİİİİİİİİİİİİİİİİİİİİİ Veritabanı ve model oluşturuluyor...");
+    using (var scope = app.Services.CreateScope())
     {
-        using (var scope = app.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-
-            dbContext.Database.EnsureDeleted(); // Veritabanını siler
-
-            dbContext.Database.EnsureCreated(); // Veritabanı yoksa oluşturur
-        }
-        break; // Exit the loop if the database is created
-    }
-    else if (test == "" || test == "n" || test == "N")
-    {
-        Console.WriteLine("Veritaban� ve model olu�turulmad�.");
-        break; // Exit the loop if the user chooses not to create the database
-    }
-    else
-    {
-        Console.WriteLine("Ge�ersiz giri�. L�tfen 'y' veya 'n' girin.");
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.EnsureDeleted();
+        dbContext.Database.EnsureCreated();
+        Console.WriteLine("Veritabanı ve model oluşturuldu. Artık API'yi kullanabilirsiniz.");
     }
 }
 
@@ -63,12 +50,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowAllOrigins");
-
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

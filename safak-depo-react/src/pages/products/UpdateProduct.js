@@ -61,6 +61,31 @@ const UpdateProduct = () => {
         setShowConfirm(false);
     };
 
+    const handleDelete = async () => {
+        setShowConfirm(false);
+        setUpdating(true);
+        await toast.promise(
+            axios.delete(`https://localhost:7018/api/product/${id}`),
+            {
+                loading: "Siliniyor...",
+                success: () => {
+                    setUpdating(false);
+                    return "Ürün başarıyla silindi!";
+                },
+                error: (error) => {
+                    setUpdating(false);
+                    const msg =
+                        error.response?.data?.errors?.Name?.[0] ||
+                        error.response?.data?.message ||
+                        'Ürün silinirken bir hata oluştu.';
+                    return msg;
+                }
+            }
+        );
+        // Redirect to product list after deletion
+        window.location.href = "/urunler";
+    };
+
     if (loading) return <div>Yükleniyor...</div>;
     if (!product) return <div>Ürün bulunamadı.</div>;
 
@@ -157,6 +182,14 @@ const UpdateProduct = () => {
                     disabled={updating}
                 >
                     {updating ? "Güncelleniyor..." : "Güncelle"}
+                </button>
+                <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition mt-2"
+                    disabled={updating}
+                >
+                    {updating ? "Siliniyor..." : "Sil"}
                 </button>
             </form>
             {showConfirm && (

@@ -8,7 +8,7 @@
         public required string Customer { get; set; }
         public bool IsInbound { get; set; } = true;
         public required string PalletListJson { get; set; }
-        public required string TotalProductListJson {       get; set; }
+        public required string TotalProductListJson { get; set; }
         public List<ShipmentProduct> ShipmentProducts { get; set; } = new();
         public List<ShipmentPallet> ShipmentPallets { get; set; } = new();
     }

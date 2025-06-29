@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import CreateDefaultShipmentButton from './CreateDefaultShipmentButton.js';
 
 function Navbar() {
   return (
@@ -11,6 +12,8 @@ function Navbar() {
           <li><Link to="/urun-ekle" className="hover:text-blue-200">Ürün Ekle</Link></li>
           <li><Link to="/sevkiyatlar" className="hover:text-blue-200">Sevkiyatlar</Link></li>
           <li><Link to="/gelen-sevkiyat" className="hover:text-blue-200">Gelen Sevkiyat</Link></li>
+          <li><Link to="/giden-sevkiyat" className="hover:text-blue-200">Giden Sevkiyat</Link></li>
+          <li><Link to="/paletler" className='hover:text-blue-200'>Paletler</Link></li>
         </ul>
       </div>
     </nav>

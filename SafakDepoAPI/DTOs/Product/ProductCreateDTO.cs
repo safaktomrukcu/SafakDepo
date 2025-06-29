@@ -9,9 +9,9 @@ namespace SafakDepoAPI.DTOs.Product
         [Required]
         public required string Code { get; set; }
         public string? Brand { get; set; }
-        public string? PalletQty { get; set; }
-        public string? BoxQty { get; set; }
-        public string? Weight { get; set; }
+        public int PalletQty { get; set; }
+        public int BoxQty { get; set; }
+        public int Weight { get; set; }
 
     }
 }

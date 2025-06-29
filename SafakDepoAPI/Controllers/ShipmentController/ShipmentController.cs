@@ -5,6 +5,7 @@ using SafakDepoAPI.DTOs.Shipment;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace SafakDepoAPI.Controllers.ShipmentController
 {
@@ -25,6 +26,7 @@ namespace SafakDepoAPI.Controllers.ShipmentController
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                Console.WriteLine(shipment);
                 List<InboundJsonPalletDTO> createdPallets = new();
 
                 foreach (InboundPalletDTO palletDto in shipment.InboundPalletsDTO)
@@ -68,6 +70,7 @@ namespace SafakDepoAPI.Controllers.ShipmentController
                     if (existingProduct != null)
                     {
                         existingProduct.Stock += Product.Quantity;
+                        existingProduct.PalletStock += 1; // Palet sayısını artır
                         _context.Products.Update(existingProduct);
                     }
                     else
@@ -145,7 +148,6 @@ namespace SafakDepoAPI.Controllers.ShipmentController
                     Product product = _context.Products.FirstOrDefault(p => p.Id == pallet.ProductId);
                     if (product == null)
                     {
-                        // Hata loglama veya özel hata mesajı dönebilirsin
                         return StatusCode(404, new { message = $"Product not found: {pallet.ProductId}" });
                     }
 
@@ -153,7 +155,7 @@ namespace SafakDepoAPI.Controllers.ShipmentController
                     {
                         PalletId = op.PalletId,
                         PalletNumber = pallet.PalletNumber,
-                        ProductId = pallet.ProductId,
+                        ProductId = product.Id,
                         ProductName = product.Name,
                         ProductCode = product.Code,
                         Quantity = op.Quantity,
@@ -163,15 +165,11 @@ namespace SafakDepoAPI.Controllers.ShipmentController
                     updatedPallets.Add(PalletDTO);
                 }
 
-
-
-
                 foreach (var op in shipment.OutboundPallets)
                 {
                     var pallet = _context.Pallets.FirstOrDefault(p => p.Id == op.PalletId);
                     if (pallet == null)
                     {
-                        // Hata loglama veya özel hata mesajı dönebilirsin
                         return StatusCode(404, new { message = $"Pallet not found: {op.PalletId}" });
                     }
 
@@ -179,30 +177,31 @@ namespace SafakDepoAPI.Controllers.ShipmentController
 
                     if (product == null)
                     {
-                        // Hata loglama veya özel hata mesajı dönebilirsin
                         return StatusCode(404, new { message = $"Product not found: {pallet.ProductId}" });
                     }
 
                     pallet.Quantity -= op.Quantity;
                     if (pallet.Quantity < 0)
                     {
-                        // Hata loglama veya özel hata mesajı dönebilirsin
                         return StatusCode(400, new { message = $"Pallet quantity cannot be negative: {pallet.Id}" });
                     }
                     else if (pallet.Quantity == 0)
                     {
-                        pallet.IsActive = false;
+                        // Palet miktarı sıfırsa sil
+                        _context.Pallets.Remove(pallet);
+                        product.PalletStock -= 1; // Palet sayısını azalt
                     }
-                    _context.Pallets.Update(pallet);
+                    else
+                    {
+                        _context.Pallets.Update(pallet);
+                    }
 
                     product.Stock -= op.Quantity;
                     if (product.Stock < 0)
                     {
-                        // Hata loglama veya özel hata mesajı dönebilirsin
                         return StatusCode(400, new { message = $"Product stock cannot be negative: {product.Id}" });
                     }
                     _context.Products.Update(product);
-
                 }
 
                 Shipment newShipment = new Shipment
@@ -217,15 +216,15 @@ namespace SafakDepoAPI.Controllers.ShipmentController
 
                 _context.Shipments.Add(newShipment);
                 _context.SaveChanges();
-                foreach (var pallet in updatedPallets)
-                {
-                    var shipmentPallet = new ShipmentPallet
-                    {
-                        ShipmentId = newShipment.Id,
-                        PalletId = pallet.PalletId
-                    };
-                    _context.ShipmentPallets.Add(shipmentPallet);
-                }
+                //foreach (var pallet in updatedPallets)
+                //{
+                //    var shipmentPallet = new ShipmentPallet
+                //    {
+                //        ShipmentId = newShipment.Id,
+                //        PalletId = pallet.PalletId
+                //    };
+                //    _context.ShipmentPallets.Add(shipmentPallet);
+                //}
 
                 foreach (var product in shipment.OutboundTotals)
                 {
@@ -254,10 +253,10 @@ namespace SafakDepoAPI.Controllers.ShipmentController
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                // Hata loglama veya özel hata mesajı dönebilirsin
                 return StatusCode(500, new { message = "Sevkiyat oluşturulurken bir hata oluştu.", error = ex.Message });
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetShipments([FromQuery] bool? isInbound, [FromQuery] int? productId)
@@ -294,5 +293,81 @@ namespace SafakDepoAPI.Controllers.ShipmentController
                 return StatusCode(500, new { message = "Sevkiyatlar alınırken bir hata oluştu.", error = ex.Message });
             }
         }
+        [HttpGet]
+        [Route("create")]
+        public async Task CreateDefault()
+        {
+            using var client = new HttpClient();
+            var baseUrl = "https://localhost:7018/api/product";
+            var products = new[]
+                    {
+                    new { Name = "Test Product", Code = "TP001", Brand = "Test Brand", PalletQty = 10, BoxQty = 20, Weight = 2 },
+                    new { Name = "Another Product", Code = "AP002", Brand = "Another Brand", PalletQty = 5, BoxQty = 15, Weight = 3 },
+                    new { Name = "Sample Product", Code = "SP003", Brand = "Sample Brand", PalletQty = 8, BoxQty = 12, Weight = 4 },
+                    new { Name = "Demo Product", Code = "DP004", Brand = "Demo Brand", PalletQty = 6, BoxQty = 10, Weight = 5 },
+                    new { Name = "Example Product", Code = "EP005", Brand = "Example Brand", PalletQty = 4, BoxQty = 8, Weight = 6 }
+                };
+
+            foreach (var product in products)
+            {
+                var response = await client.PostAsJsonAsync(baseUrl, product);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"{product.Name} eklendi.");
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"{product.Name} eklenemedi! Status: {response.StatusCode}, Hata: {error}");
+                }
+                await Task.Delay(500); // Gereksiz yüklenmeyi önlemek için kısa bekleme
+            }
+
+            // Ürünler eklendikten sonra, ID'leri dinamik olarak alıp kullanmak daha güvenli olur.
+            // Ancak örnek olması için sabit ID'ler kullanıldı.
+            var inboundShipment = new
+            {
+                ShipmentDate = "2025-01-01",
+                InboundPalletsDTO = new[]
+                {
+            new { ProductId = 1, ProductName = "Test Product", ProductCode = "TP001", Quantity = 123, Location = "Tuzla" },
+            new { ProductId = 1, ProductName = "Test Product", ProductCode = "TP001", Quantity = 123, Location = "Tuzla" }
+        },
+                InboundTotalsDTO = new[]
+                {
+            new { ProductName = "Test Product", ProductCode = "TP001", ProductId = 1, Quantity = 246 }
+        }
+            };
+
+            var inboundResponse = await client.PostAsJsonAsync("https://localhost:7018/api/shipment/inbound", inboundShipment);
+            if (inboundResponse.IsSuccessStatusCode)
+                Console.WriteLine("Inbound shipment eklendi.");
+            else
+                Console.WriteLine($"Inbound shipment eklenemedi! Status: {inboundResponse.StatusCode}, Hata: {await inboundResponse.Content.ReadAsStringAsync()}");
+            await Task.Delay(500);
+
+            var outboundShipment = new
+            {
+                ShipmentDate = "2025-01-02",
+                Customer = "Şafakku",
+                OutboundPallets = new[]
+                {
+            new { PalletId = 1, Quantity = 50 },
+            new { PalletId = 2, Quantity = 50 }
+        },
+                OutboundTotals = new[]
+                {
+            new { ProductName = "Test Product", ProductCode = "TP001", ProductId = 1, Quantity = 100 }
+        }
+            };
+
+            var outboundResponse = await client.PostAsJsonAsync("https://localhost:7018/api/shipment/outbound", outboundShipment);
+            if (outboundResponse.IsSuccessStatusCode)
+                Console.WriteLine("Outbound shipment eklendi.");
+            else
+                Console.WriteLine($"Outbound shipment eklenemedi! Status: {outboundResponse.StatusCode}, Hata: {await outboundResponse.Content.ReadAsStringAsync()}");
+            await Task.Delay(500);
+        }
+
     }
 }
