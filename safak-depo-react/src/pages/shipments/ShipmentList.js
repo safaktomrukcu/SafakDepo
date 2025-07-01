@@ -17,46 +17,77 @@ const Modal = ({ children, onClose }) => (
 );
 
 const ShipmentDetail = ({ shipment, onClose }) => (
-  <Modal onClose={onClose}>
-    <div className="flex justify-between items-center mb-2">
-      <h2 className="font-bold text-lg">Sevkiyat Detayı (ID: {shipment.id})</h2>
-      <button onClick={onClose} className="text-red-600 font-bold text-xl px-2">×</button>
-    </div>
-    <div><b>Sevkiyat No:</b> {shipment.shipmentNumber}</div>
-    <div><b>Tarih:</b> {shipment.shipmentDate ? new Date(shipment.shipmentDate).toLocaleDateString("tr-TR") : "-"}</div>
-    <div><b>Müşteri:</b> {shipment.customer}</div>
-    <div><b>Yön:</b> {shipment.isInbound ? "Giriş" : "Çıkış"}</div>
-    <div><b>Toplam Ürün Adedi:</b> {shipment.totalProductListJson ? shipment.totalProductListJson.reduce((sum, p) => sum + (p.quantity || 0), 0) : 0}</div>
-    <div><b>Palet Sayısı:</b> {shipment.palletListJson ? shipment.palletListJson.length : 0}</div>
-    <div className="mt-2">
-      <b>Paletler:</b>
-      <ul className="list-disc ml-6">
-        {shipment.palletListJson && shipment.palletListJson.length > 0 ? (
-          shipment.palletListJson.map((pallet) => (
-            <li key={pallet.palletId}>
-              Palet No: {pallet.palletNumber}, Ürün: {pallet.productName} ({pallet.productCode}), Adet: {pallet.quantity}, Lokasyon: {pallet.location}
-            </li>
-          ))
-        ) : (
-          <li>Palet yok</li>
-        )}
-      </ul>
-    </div>
-    <div className="mt-2">
-      <b>Ürünler:</b>
-      <ul className="list-disc ml-6">
+<Modal onClose={onClose}>
+  <div className="flex justify-between items-center mb-2">
+    <h2 className="font-bold text-lg">Sevkiyat Detayı (ID: {shipment.id})</h2>
+    <button onClick={onClose} className="text-red-600 font-bold text-xl px-2">×</button>
+  </div>
+  <div><b>Sevkiyat No:</b> {shipment.shipmentNumber}</div>
+  <div><b>Tarih:</b> {shipment.shipmentDate ? new Date(shipment.shipmentDate).toLocaleDateString("tr-TR") : "-"}</div>
+  <div><b>Müşteri:</b> {shipment.customer}</div>
+  <div><b>Yön:</b> {shipment.isInbound ? "Giriş" : "Çıkış"}</div>
+  <div><b>Toplam Ürün Adedi:</b> {shipment.totalProductListJson ? shipment.totalProductListJson.reduce((sum, p) => sum + (p.quantity || 0), 0) : 0}</div>
+  <div><b>Palet Sayısı:</b> {shipment.palletListJson ? shipment.palletListJson.length : 0}</div>
+
+  <div className="mt-4">
+    <b>Ürünler:</b>
+    <table className="min-w-full bg-white border mt-1 mb-2">
+      <thead>
+        <tr>
+          <th className="border px-2 py-1">Ürün Adı</th>
+          <th className="border px-2 py-1">Ürün Kodu</th>
+          <th className="border px-2 py-1">Adet</th>
+        </tr>
+      </thead>
+      <tbody>
         {shipment.totalProductListJson && shipment.totalProductListJson.length > 0 ? (
           shipment.totalProductListJson.map((product) => (
-            <li key={product.productId}>
-              {product.productName} ({product.productCode}) - {product.quantity} adet
-            </li>
+            <tr key={product.productId}>
+              <td className="border px-2 py-1">{product.productName}</td>
+              <td className="border px-2 py-1">{product.productCode}</td>
+              <td className="border px-2 py-1">{product.quantity}</td>
+            </tr>
           ))
         ) : (
-          <li>Ürün yok</li>
+          <tr>
+            <td className="border px-2 py-1" colSpan={3}>Ürün yok</td>
+          </tr>
         )}
-      </ul>
-    </div>
-  </Modal>
+      </tbody>
+    </table>
+  </div>
+  <div className="mt-2">
+    <b>Paletler:</b>
+    <table className="min-w-full bg-white border mt-1">
+      <thead>
+        <tr>
+          <th className="border px-2 py-1">Palet No</th>
+          <th className="border px-2 py-1">Ürün Adı</th>
+          <th className="border px-2 py-1">Ürün Kodu</th>
+          <th className="border px-2 py-1">Adet</th>
+          <th className="border px-2 py-1">Lokasyon</th>
+        </tr>
+      </thead>
+      <tbody>
+        {shipment.palletListJson && shipment.palletListJson.length > 0 ? (
+          shipment.palletListJson.map((pallet) => (
+            <tr key={pallet.palletId}>
+              <td className="border px-2 py-1">{pallet.palletNumber}</td>
+              <td className="border px-2 py-1">{pallet.productName}</td>
+              <td className="border px-2 py-1">{pallet.productCode}</td>
+              <td className="border px-2 py-1">{pallet.quantity}</td>
+              <td className="border px-2 py-1">{pallet.location}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td className="border px-2 py-1" colSpan={5}>Palet yok</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</Modal>
 );
 
 const ShipmentList = () => {
@@ -90,7 +121,6 @@ const ShipmentList = () => {
           <table className="min-w-full bg-white border mt-4">
             <thead>
               <tr>
-                <th className="border px-4 py-2">ID</th>
                 <th className="border px-4 py-2">Sevkiyat No</th>
                 <th className="border px-4 py-2">Tarih</th>
                 <th className="border px-4 py-2">Müşteri</th>
@@ -110,7 +140,6 @@ const ShipmentList = () => {
                     className={`cursor-pointer transition ${rowColor}`}
                     onClick={() => setSelectedShipment(shipment)}
                   >
-                    <td className="border px-4 py-2">{shipment.id}</td>
                     <td className="border px-4 py-2">{shipment.shipmentNumber}</td>
                     <td className="border px-4 py-2">
                       {shipment.shipmentDate

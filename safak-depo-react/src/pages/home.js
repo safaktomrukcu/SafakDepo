@@ -5,7 +5,7 @@ const Home = () => {
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Depo Stok Takip Sistemine Hoş Geldiniz</h2>
       <p className="text-gray-600 mb-4">
-        Şafak Depo ile stoklarınızı kolayca yönetin, ürün ekleyin ve güncel stok durumunu takip edin.
+        Depo ile stoklarınızı kolayca yönetin, ürün ekleyin ve güncel stok durumunu takip edin.
       </p>
       <ul className="list-disc pl-6 text-gray-700 mb-4">
         <li>Stoklarınızı görüntüleyin</li>

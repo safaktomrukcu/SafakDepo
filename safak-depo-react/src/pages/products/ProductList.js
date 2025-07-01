@@ -56,6 +56,7 @@ const ProductList = () => {
                         <th className="border px-4 py-2">Kod</th>
                         <th className="border px-4 py-2">Marka</th>
                         <th className="border px-4 py-2">Stok</th>
+                        <th className="border px-4 py-2">Pallet</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,6 +70,7 @@ const ProductList = () => {
                             <td className="border px-4 py-2">{product.code}</td>
                             <td className="border px-4 py-2">{product.brand}</td>
                             <td className="border px-4 py-2">{product.stock}</td>
+                            <td className="border px-4 py-2">{product.palletStock}</td>
                         </tr>
 
                     ))}

@@ -64,7 +64,7 @@ namespace SafakDepoAPI.Controllers.ShipmentController
 
 
 
-                foreach (var Product in shipment.InboundTotalsDTO)
+                foreach (var Product in shipment.InboundPalletsDTO)
                 {
                     Product? existingProduct = await _context.Products.FindAsync(Product.ProductId);
                     if (existingProduct != null)
@@ -79,6 +79,7 @@ namespace SafakDepoAPI.Controllers.ShipmentController
                         // Hata loglama veya özel hata mesajı dönebilirsin
                         return StatusCode(500, new { message = $"Gönderilen ürün bulunamadı. {Product.ProductId}" });
                     }
+                    
                 }
 
                 Shipment newShipment = new Shipment

@@ -54,6 +54,7 @@ namespace SafakDepoAPI.Controllers.ProductControllers
                 Code = p.Code,
                 Brand = p.Brand,
                 Stock = p.Stock,
+                PalletStock = p.PalletStock
             }).ToList();
 
             return Ok(productList);
@@ -95,7 +96,8 @@ namespace SafakDepoAPI.Controllers.ProductControllers
                     Name = p.Name,
                     Code = p.Code,
                     Brand = p.Brand,
-                    Stock = p.Stock
+                    Stock = p.Stock,
+                    PalletStock = p.PalletStock
                 }).ToList();
 
             return Ok(productList);

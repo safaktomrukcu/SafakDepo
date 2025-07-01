@@ -187,17 +187,16 @@ const OutboundShipment = () => {
                   <tr
                     key={pallet.id}
                     className={`transition cursor-pointer ${checked ? "bg-blue-100" : ""} hover:bg-blue-50`}
-                    onClick={() => togglePallet(pallet)}
                   >
                     {/* Checkbox kaldırıldı */}
-                    <td className="border px-2 py-1 text-center">
+                    <td className="border px-2 py-1 text-center" onClick={() => togglePallet(pallet)}>
                       {checked ? "✅" : "☐"}
                     </td>
-                    <td className="border px-2 py-1">{pallet.palletNumber}</td>
-                    <td className="border px-2 py-1">{pallet.productName}</td>
-                    <td className="border px-2 py-1">{pallet.productCode}</td>
-                    <td className="border px-2 py-1">{pallet.quantity}</td>
-                    <td className="border px-2 py-1">{pallet.location}</td>
+                    <td className="border px-2 py-1" onClick={() => togglePallet(pallet)}>{pallet.palletNumber}</td>
+                    <td className="border px-2 py-1" onClick={() => togglePallet(pallet)}>{pallet.productName}</td>
+                    <td className="border px-2 py-1" onClick={() => togglePallet(pallet)}>{pallet.productCode}</td>
+                    <td className="border px-2 py-1" onClick={() => togglePallet(pallet)}>{pallet.quantity}</td>
+                    <td className="border px-2 py-1" onClick={() => togglePallet(pallet)}>{pallet.location}</td>
                     <td className="border px-2 py-1">
                       {checked && (
                         <input
